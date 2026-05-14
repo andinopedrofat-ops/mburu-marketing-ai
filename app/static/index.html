@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MBURU · Marketing Intelligence System</title>
+  <style>
+    /* ═══════════════════════════════════════════
+       MBURU DESIGN SYSTEM
+       Deep Blue #0A1628 · Yellow #FFD600
+    ═══════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --deep-blue: #0A1628;
+      --blue-mid: #0F1F3D;
+      --blue-surface: #152238;
+      --blue-border: #1E3355;
+      --yellow: #FFD600;
+      --yellow-dim: #CC9D00; /* used cautiously */
+      --white: #FFFFFF;
+      --gray-text: #8A8F98;
+      --gray-border: #253550;
+      --charcoal: #1C1C1E;
+      --success: #22C55E;
+      --error: #EF4444;
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+      --radius: 8px;
+      --radius-lg: 12px;
+      --transition: 0.18s ease;
+    }
+
+    html { font-size: 15px; scroll-behavior: smooth; }
+
+    body {
+      background: var(--deep-blue);
+      color: var(--white);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── HEADER ─────────────────────────────── */
+    header {
+      background: var(--deep-blue);
+      border-bottom: 1px solid var(--blue-border);
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-badge {
+      width: 34px;
+      height: 34px;
+      background: var(--yellow);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 14px;
+      color: var(--deep-blue);
+      letter-spacing: -0.5px;
+      flex-shrink: 0;
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .logo-name {
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      color: var(--white);
+    }
+
+    .logo-sub {
+      font-size: 10px;
+      color: var(--gray-text);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .model-select {
+      background: var(--blue-surface);
+      border: 1px solid var(--blue-border);
+      color: var(--gray-text);
+      padding: 5px 10px;
+      border-radius: var(--radius);
+      font-size: 12px;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .model-select:hover { border-color: var(--yellow); color: var(--white); }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      transition: var(--transition);
+    }
+
+    .status-dot.loading { background: var(--yellow); animation: pulse 1s infinite; }
+    .status-dot.error { background: var(--error); }
+
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    /* ── MAIN LAYOUT ─────────────────────────── */
+    .workspace {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      min-height: calc(100vh - 60px);
+    }
+
+    /* ── LEFT PANEL: MODULE NAV + FORM ───────── */
+    .left-panel {
+      border-right: 1px solid var(--blue-border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Module tabs */
+    .module-nav {
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      border-bottom: 1px solid var(--blue-border);
+      flex-shrink: 0;
+    }
+
+    .module-btn {
+      background: transparent;
+      border: 1px solid var(--blue-border);
+      color: var(--gray-text);
+      padding: 8px 10px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 12px;
+      font-family: var(--font-sans);
+      font-weight: 500;
+      transition: var(--transition);
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .module-btn:hover {
+      border-color: var(--yellow);
+      color: var(--white);
+      background: rgba(255, 214, 0, 0.04);
+    }
+
+    .module-btn.active {
+      border-color: var(--yellow);
+      background: rgba(255, 214, 0, 0.08);
+      color: var(--yellow);
+    }
+
+    .module-btn .btn-icon { font-size: 14px; flex-shrink: 0; }
+
+    /* Form panel */
+    .form-panel {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 16px;
+    }
+
+    .form-header {
+      margin-bottom: 20px;
+    }
+
+    .form-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .form-desc {
+      font-size: 12px;
+      color: var(--gray-text);
+      line-height: 1.5;
+    }
+
+    .form-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .field-group { display: flex; flex-direction: column; gap: 5px; }
+
+    .field-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gray-text);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .field-input,
+    .field-select,
+    .field-textarea {
+      background: var(--blue-surface);
+      border: 1px solid var(--blue-border);
+      color: var(--white);
+      border-radius: var(--radius);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      transition: var(--transition);
+      width: 100%;
+    }
+
+    .field-input,
+    .field-select { padding: 8px 10px; height: 36px; }
+
+    .field-textarea {
+      padding: 8px 10px;
+      min-height: 72px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    .field-input:focus,
+    .field-select:focus,
+    .field-textarea:focus {
+      outline: none;
+      border-color: var(--yellow);
+      background: rgba(255,214,0,0.03);
+    }
+
+    .field-input::placeholder,
+    .field-textarea::placeholder { color: var(--gray-text); opacity: 0.7; }
+
+    .field-select option { background: var(--blue-mid); color: var(--white); }
+
+    /* Generate button */
+    .generate-btn {
+      width: 100%;
+      margin-top: 20px;
+      padding: 12px 20px;
+      background: var(--yellow);
+      color: var(--deep-blue);
+      border: none;
+      border-radius: var(--radius);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .generate-btn:hover:not(:disabled) {
+      background: #FFF0A0;
+      transform: translateY(-1px);
+    }
+
+    .generate-btn:active:not(:disabled) { transform: translateY(0); }
+
+    .generate-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .generate-btn .btn-spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(10,22,40,0.3);
+      border-top-color: var(--deep-blue);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    .generate-btn.loading .btn-spinner { display: block; }
+    .generate-btn.loading .btn-text { opacity: 0.7; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── RIGHT PANEL: OUTPUT ─────────────────── */
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .output-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--blue-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .output-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-text);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .output-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .action-btn {
+      background: var(--blue-surface);
+      border: 1px solid var(--blue-border);
+      color: var(--gray-text);
+      padding: 5px 12px;
+      border-radius: var(--radius);
+      font-size: 12px;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .action-btn:hover { border-color: var(--yellow); color: var(--white); }
+    .action-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    .action-btn.success { border-color: var(--success); color: var(--success); }
+
+    /* Output area */
+    .output-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+    }
+
+    /* Empty state */
+    .empty-state {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .empty-icon {
+      font-size: 48px;
+      opacity: 0.3;
+    }
+
+    .empty-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--white);
+      opacity: 0.4;
+    }
+
+    .empty-sub {
+      font-size: 13px;
+      color: var(--gray-text);
+      max-width: 280px;
+      line-height: 1.6;
+    }
+
+    .quick-tips {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      text-align: left;
+      max-width: 300px;
+    }
+
+    .quick-tip {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--gray-text);
+    }
+
+    .quick-tip-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--yellow);
+      flex-shrink: 0;
+      margin-top: 7px;
+    }
+
+    /* Generated content */
+    .output-content {
+      display: none;
+    }
+
+    .output-content.visible { display: block; }
+
+    /* Metadata bar */
+    .output-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+
+    .meta-tag {
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    .meta-tag.module { background: rgba(255,214,0,0.12); color: var(--yellow); border: 1px solid rgba(255,214,0,0.2); }
+    .meta-tag.model { background: rgba(138,143,152,0.1); color: var(--gray-text); border: 1px solid var(--gray-border); }
+    .meta-tag.usage { background: rgba(34,197,94,0.08); color: var(--success); border: 1px solid rgba(34,197,94,0.2); }
+    .meta-tag.cached { background: rgba(59,130,246,0.1); color: #60A5FA; border: 1px solid rgba(59,130,246,0.2); }
+
+    /* Markdown-like output rendering */
+    .output-text {
+      color: var(--white);
+      font-size: 14px;
+      line-height: 1.75;
+      white-space: pre-wrap;
+      font-family: var(--font-sans);
+    }
+
+    .output-text h1, .output-text h2 {
+      color: var(--yellow);
+      font-weight: 800;
+      margin: 20px 0 8px;
+      line-height: 1.3;
+    }
+    .output-text h1 { font-size: 18px; }
+    .output-text h2 { font-size: 15px; }
+
+    .output-text h3 {
+      color: var(--white);
+      font-weight: 700;
+      font-size: 13px;
+      margin: 16px 0 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .output-text strong { color: var(--yellow); font-weight: 700; }
+    .output-text em { color: #C0D0F0; font-style: italic; }
+
+    .output-text code {
+      background: var(--blue-surface);
+      border: 1px solid var(--blue-border);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: #FFD600;
+    }
+
+    .output-text pre {
+      background: var(--blue-surface);
+      border: 1px solid var(--blue-border);
+      border-radius: var(--radius);
+      padding: 14px;
+      margin: 10px 0;
+      overflow-x: auto;
+    }
+
+    .output-text pre code {
+      background: none;
+      border: none;
+      padding: 0;
+      color: var(--white);
+      font-size: 13px;
+    }
+
+    .output-text hr {
+      border: none;
+      border-top: 1px solid var(--blue-border);
+      margin: 16px 0;
+    }
+
+    /* Cursor blink during streaming */
+    .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 16px;
+      background: var(--yellow);
+      animation: blink 0.8s step-end infinite;
+      vertical-align: text-bottom;
+      margin-left: 1px;
+    }
+
+    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
+    /* Usage footer */
+    .output-footer {
+      margin-top: 20px;
+      padding: 12px 16px;
+      background: var(--blue-surface);
+      border: 1px solid var(--blue-border);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .usage-stats {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .usage-stat {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      color: var(--gray-text);
+    }
+
+    .usage-stat-value { color: var(--white); font-weight: 600; }
+    .usage-cache-value { color: #60A5FA; font-weight: 600; }
+
+    /* ── HISTORY SIDEBAR ──────────────────────── */
+    .history-panel {
+      border-top: 1px solid var(--blue-border);
+      padding: 12px 20px;
+      flex-shrink: 0;
+    }
+
+    .history-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--gray-text);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
+    }
+
+    .history-list {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .history-item {
+      flex-shrink: 0;
+      background: var(--blue-surface);
+      border: 1px solid var(--blue-border);
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 11px;
+      color: var(--gray-text);
+      cursor: pointer;
+      transition: var(--transition);
+      max-width: 150px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .history-item:hover { border-color: var(--yellow); color: var(--white); }
+
+    /* ── SCROLLBAR ───────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--blue-border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--gray-border); }
+
+    /* ── TOAST ───────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--blue-surface);
+      border: 1px solid var(--blue-border);
+      border-radius: var(--radius);
+      padding: 10px 16px;
+      font-size: 13px;
+      color: var(--white);
+      z-index: 1000;
+      transform: translateY(60px);
+      opacity: 0;
+      transition: all 0.25s ease;
+    }
+
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { border-color: var(--success); }
+    .toast.error { border-color: var(--error); }
+
+    /* ── RESPONSIVE ──────────────────────────── */
+    @media (max-width: 768px) {
+      .workspace { grid-template-columns: 1fr; }
+      .right-panel { min-height: 60vh; }
+      .left-panel { border-right: none; border-bottom: 1px solid var(--blue-border); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══════════════════════════════ -->
+<header>
+  <a class="logo" href="/">
+    <div class="logo-badge">M</div>
+    <div class="logo-text">
+      <span class="logo-name">MBURUCUYA</span>
+      <span class="logo-sub">Marketing Intelligence System</span>
+    </div>
+  </a>
+  <div class="header-right">
+    <select class="model-select" id="modelSelect">
+      <option value="claude-haiku-4-5-20251001">⚡ Haiku 4.5 — Fast</option>
+      <option value="claude-sonnet-4-6">✦ Sonnet 4.6 — Balanced</option>
+      <option value="claude-opus-4-7">◆ Opus 4.7 — Max Quality</option>
+    </select>
+    <div class="status-dot" id="statusDot" title="Ready"></div>
+  </div>
+</header>
+
+<!-- ═══ WORKSPACE ═════════════════════════════ -->
+<div class="workspace">
+
+  <!-- ─── LEFT: NAV + FORM ────────────────── -->
+  <div class="left-panel">
+    <nav class="module-nav" id="moduleNav">
+      <!-- populated by JS -->
+    </nav>
+    <div class="form-panel" id="formPanel">
+      <!-- populated by JS -->
+    </div>
+  </div>
+
+  <!-- ─── RIGHT: OUTPUT ───────────────────── -->
+  <div class="right-panel">
+    <div class="output-header">
+      <span class="output-title" id="outputTitle">Output</span>
+      <div class="output-actions">
+        <button class="action-btn" id="copyBtn" disabled onclick="copyOutput()">
+          📋 Copiar
+        </button>
+        <button class="action-btn" id="exportBtn" disabled onclick="exportOutput()">
+          💾 Exportar
+        </button>
+        <button class="action-btn" id="clearBtn" disabled onclick="clearOutput()">
+          ✕ Limpiar
+        </button>
+      </div>
+    </div>
+
+    <div class="output-area" id="outputArea">
+      <!-- Empty state -->
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">⚡</div>
+        <div class="empty-title">Listo para generar</div>
+        <div class="empty-sub">Elegí un módulo, completá los campos y presioná Generar.</div>
+        <div class="quick-tips">
+          <div class="quick-tip">
+            <div class="quick-tip-dot"></div>
+            <span>Haiku 4.5 para velocidad. Sonnet 4.6 para calidad. Opus 4.7 para campañas complejas.</span>
+          </div>
+          <div class="quick-tip">
+            <div class="quick-tip-dot"></div>
+            <span>El sistema usa prompt caching — después de la primera generación, las siguientes son más rápidas y baratas.</span>
+          </div>
+          <div class="quick-tip">
+            <div class="quick-tip-dot"></div>
+            <span>Todo output está 100% calibrado al sistema de marca MBURU. Paraguay · GS. · Vos form.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Output content -->
+      <div class="output-content" id="outputContent">
+        <div class="output-meta" id="outputMeta"></div>
+        <div class="output-text" id="outputText"></div>
+        <div class="output-footer" id="outputFooter" style="display:none">
+          <div class="usage-stats" id="usageStats"></div>
+          <span style="font-size:11px;color:var(--gray-text)">
+            ✦ MBURU Marketing OS · Powered by Anthropic
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="history-panel" id="historyPanel" style="display:none">
+      <div class="history-title">Recientes</div>
+      <div class="history-list" id="historyList"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ TOAST ════════════════════════════════ -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ════════════════════════════════════════════
+   MBURU MARKETING OS — Frontend
+   Streaming SSE · Prompt Caching · History
+════════════════════════════════════════════ */
+
+let modules = [];
+let activeModule = null;
+let isGenerating = false;
+let outputBuffer = '';
+let history = JSON.parse(localStorage.getItem('mburu_history') || '[]');
+let currentModuleId = '';
+let currentOutput = '';
+
+// ── Boot ──────────────────────────────────
+async function boot() {
+  try {
+    const res = await fetch('/api/modules');
+    modules = await res.json();
+    renderModuleNav();
+    activateModule(modules[0]);
+    renderHistory();
+
+    // Check API key health
+    const health = await fetch('/api/health').then(r => r.json());
+    if (!health.api_key_configured) {
+      showToast('⚠ ANTHROPIC_API_KEY no configurada. Agregala al archivo .env', 'error', 6000);
+    }
+  } catch (e) {
+    showToast('Error al conectar con el servidor.', 'error');
+  }
+}
+
+// ── Module nav ────────────────────────────
+function renderModuleNav() {
+  const nav = document.getElementById('moduleNav');
+  nav.innerHTML = modules.map(m => `
+    <button class="module-btn" data-id="${m.id}" onclick="activateModule(modules.find(x=>x.id==='${m.id}'))">
+      <span class="btn-icon">${m.icon}</span>
+      ${m.name}
+    </button>
+  `).join('');
+}
+
+function activateModule(module) {
+  if (!module) return;
+  activeModule = module;
+  currentModuleId = module.id;
+
+  // Update nav
+  document.querySelectorAll('.module-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.id === module.id);
+  });
+
+  // Render form
+  const panel = document.getElementById('formPanel');
+  panel.innerHTML = `
+    <div class="form-header">
+      <div class="form-title">${module.icon} ${module.name}</div>
+      <div class="form-desc">${module.description}</div>
+    </div>
+    <div class="form-fields" id="formFields">
+      ${module.fields.map(renderField).join('')}
+    </div>
+    <button class="generate-btn" id="generateBtn" onclick="generate()">
+      <div class="btn-spinner"></div>
+      <span class="btn-text">⚡ Generar</span>
+    </button>
+  `;
+}
+
+function renderField(f) {
+  const label = `<label class="field-label" for="${f.id}">${f.label}</label>`;
+  let input = '';
+
+  if (f.type === 'select') {
+    const opts = f.options.map(o => `<option value="${o}">${o}</option>`).join('');
+    input = `<select class="field-select" id="${f.id}">${opts}</select>`;
+  } else if (f.type === 'textarea') {
+    input = `<textarea class="field-textarea" id="${f.id}" placeholder="${f.placeholder || ''}"></textarea>`;
+  } else {
+    input = `<input class="field-input" type="text" id="${f.id}" placeholder="${f.placeholder || ''}" />`;
+  }
+
+  return `<div class="field-group">${label}${input}</div>`;
+}
+
+// ── Generate ──────────────────────────────
+async function generate() {
+  if (isGenerating || !activeModule) return;
+
+  const inputs = {};
+  let hasRequired = true;
+  activeModule.fields.forEach(f => {
+    const el = document.getElementById(f.id);
+    if (el) inputs[f.id] = el.value.trim();
+  });
+
+  const model = document.getElementById('modelSelect').value;
+
+  // UI: loading state
+  setLoading(true);
+  clearOutputUI();
+  showOutputContent();
+
+  // Metadata tags
+  document.getElementById('outputMeta').innerHTML = `
+    <span class="meta-tag module">${activeModule.icon} ${activeModule.name}</span>
+    <span class="meta-tag model">${model}</span>
+    <span class="meta-tag" style="background:rgba(255,214,0,0.06);color:var(--gray-text);border:1px solid var(--gray-border)">🇵🇾 Paraguay</span>
+  `;
+
+  document.getElementById('outputTitle').textContent = `${activeModule.name} — Generando...`;
+
+  outputBuffer = '';
+  currentOutput = '';
+
+  try {
+    const res = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ module_id: activeModule.id, inputs, model }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.detail || 'Error del servidor');
+    }
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    const outputEl = document.getElementById('outputText');
+
+    // Add cursor
+    outputEl.innerHTML = '<span class="cursor"></span>';
+
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+
+      const chunk = decoder.decode(value, { stream: true });
+      const lines = chunk.split('\n');
+
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const data = line.slice(6).trim();
+        if (!data) continue;
+
+        try {
+          const event = JSON.parse(data);
+
+          if (event.type === 'text') {
+            outputBuffer += event.text;
+            currentOutput += event.text;
+            outputEl.innerHTML = renderMarkdown(outputBuffer) + '<span class="cursor"></span>';
+            outputEl.parentElement.scrollTop = outputEl.parentElement.scrollHeight;
+          }
+
+          if (event.type === 'done') {
+            outputEl.innerHTML = renderMarkdown(outputBuffer);
+            renderUsage(event.usage);
+            finishGeneration();
+          }
+
+          if (event.type === 'error') {
+            outputEl.innerHTML = `<span style="color:var(--error)">❌ ${event.text}</span>`;
+            setLoading(false);
+            setStatus('error');
+            showToast(event.text, 'error');
+          }
+        } catch (_) {}
+      }
+    }
+
+  } catch (e) {
+    document.getElementById('outputText').innerHTML =
+      `<span style="color:var(--error)">❌ ${e.message}</span>`;
+    setLoading(false);
+    setStatus('error');
+    showToast(e.message, 'error');
+  }
+}
+
+function finishGeneration() {
+  setLoading(false);
+  setStatus('ready');
+  document.getElementById('outputTitle').textContent = `${activeModule.name} — Listo`;
+  enableOutputActions();
+
+  // Save to history
+  const entry = {
+    id: Date.now(),
+    module: activeModule.name,
+    icon: activeModule.icon,
+    preview: currentOutput.slice(0, 80).replace(/\n/g, ' '),
+    content: currentOutput,
+    ts: new Date().toLocaleTimeString('es-PY', { hour: '2-digit', minute: '2-digit' }),
+  };
+  history.unshift(entry);
+  if (history.length > 10) history.pop();
+  localStorage.setItem('mburu_history', JSON.stringify(history));
+  renderHistory();
+}
+
+// ── Markdown renderer (lightweight) ───────
+function renderMarkdown(text) {
+  return text
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    // Code blocks
+    .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+    // Inline code
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    // Headers
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+    // Bold / italic
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+    // HR
+    .replace(/^---+$/gm, '<hr/>')
+    // Line breaks preserved
+    .replace(/\n/g, '<br/>');
+}
+
+// ── Output state helpers ───────────────────
+function clearOutputUI() {
+  document.getElementById('outputText').innerHTML = '';
+  document.getElementById('outputMeta').innerHTML = '';
+  document.getElementById('outputFooter').style.display = 'none';
+  document.getElementById('usageStats').innerHTML = '';
+  outputBuffer = '';
+}
+
+function showOutputContent() {
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('outputContent').classList.add('visible');
+}
+
+function clearOutput() {
+  document.getElementById('emptyState').style.display = 'flex';
+  document.getElementById('outputContent').classList.remove('visible');
+  document.getElementById('outputTitle').textContent = 'Output';
+  disableOutputActions();
+  outputBuffer = '';
+  currentOutput = '';
+}
+
+function enableOutputActions() {
+  document.getElementById('copyBtn').disabled = false;
+  document.getElementById('exportBtn').disabled = false;
+  document.getElementById('clearBtn').disabled = false;
+}
+
+function disableOutputActions() {
+  document.getElementById('copyBtn').disabled = true;
+  document.getElementById('exportBtn').disabled = true;
+  document.getElementById('clearBtn').disabled = true;
+}
+
+function renderUsage(usage) {
+  if (!usage) return;
+  const footer = document.getElementById('outputFooter');
+  const stats = document.getElementById('usageStats');
+  footer.style.display = 'flex';
+
+  const cached = usage.cache_read || 0;
+  const created = usage.cache_created || 0;
+
+  stats.innerHTML = `
+    <div class="usage-stat">
+      <span>Tokens entrada:</span>
+      <span class="usage-stat-value">${(usage.input || 0).toLocaleString()}</span>
+    </div>
+    <div class="usage-stat">
+      <span>Tokens salida:</span>
+      <span class="usage-stat-value">${(usage.output || 0).toLocaleString()}</span>
+    </div>
+    ${cached > 0 ? `<div class="usage-stat"><span>Cache read:</span><span class="usage-cache-value">↑${cached.toLocaleString()}</span></div>` : ''}
+    ${created > 0 ? `<div class="usage-stat"><span>Cache created:</span><span class="usage-cache-value">↑${created.toLocaleString()}</span></div>` : ''}
+  `;
+}
+
+// ── Actions ────────────────────────────────
+async function copyOutput() {
+  try {
+    await navigator.clipboard.writeText(currentOutput);
+    const btn = document.getElementById('copyBtn');
+    btn.classList.add('success');
+    btn.textContent = '✓ Copiado';
+    setTimeout(() => { btn.classList.remove('success'); btn.innerHTML = '📋 Copiar'; }, 2000);
+    showToast('Copiado al portapapeles.', 'success');
+  } catch (e) {
+    showToast('Error al copiar.', 'error');
+  }
+}
+
+function exportOutput() {
+  const filename = `mburu-${currentModuleId}-${Date.now()}.md`;
+  const blob = new Blob([currentOutput], { type: 'text/markdown' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast(`Exportado: ${filename}`, 'success');
+}
+
+// ── Loading / status ───────────────────────
+function setLoading(loading) {
+  isGenerating = loading;
+  const btn = document.getElementById('generateBtn');
+  if (!btn) return;
+  btn.disabled = loading;
+  btn.classList.toggle('loading', loading);
+  setStatus(loading ? 'loading' : 'ready');
+}
+
+function setStatus(state) {
+  const dot = document.getElementById('statusDot');
+  dot.className = 'status-dot' + (state !== 'ready' ? ` ${state}` : '');
+}
+
+// ── History ────────────────────────────────
+function renderHistory() {
+  const panel = document.getElementById('historyPanel');
+  const list = document.getElementById('historyList');
+  if (history.length === 0) { panel.style.display = 'none'; return; }
+  panel.style.display = 'block';
+  list.innerHTML = history.map(h => `
+    <div class="history-item" title="${h.module} · ${h.ts}" onclick="restoreHistory(${h.id})">
+      ${h.icon} ${h.module} · ${h.ts}
+    </div>
+  `).join('');
+}
+
+function restoreHistory(id) {
+  const entry = history.find(h => h.id === id);
+  if (!entry) return;
+  currentOutput = entry.content;
+  outputBuffer = entry.content;
+  showOutputContent();
+  document.getElementById('outputText').innerHTML = renderMarkdown(entry.content);
+  document.getElementById('outputTitle').textContent = `${entry.icon} ${entry.module} — Restaurado`;
+  document.getElementById('outputMeta').innerHTML = `
+    <span class="meta-tag module">${entry.icon} ${entry.module}</span>
+    <span class="meta-tag model" style="background:rgba(138,143,152,0.08)">Historial · ${entry.ts}</span>
+  `;
+  enableOutputActions();
+}
+
+// ── Toast ──────────────────────────────────
+function showToast(msg, type = '', duration = 3000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast show ${type}`;
+  setTimeout(() => { t.className = 'toast'; }, duration);
+}
+
+// ── Init ───────────────────────────────────
+boot();
+</script>
+</body>
+</html>
